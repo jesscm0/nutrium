@@ -1,13 +1,4 @@
 Rails.application.routes.draw do
-  namespace :api do
-    namespace :v1 do
-      get "appointments/index"
-      get "appointments/show"
-      get "appointments/create"
-      get "appointments/update"
-      get "catalogs/index"
-    end
-  end
  
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
