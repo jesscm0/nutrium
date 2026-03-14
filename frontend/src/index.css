@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+@theme {
+  --color-nutrium-green: #46be8b;
+  --color-nutrium-green-darker: #27a887;
+  --color-nutrium-orange: #e4966c;
+  --color-nutrium-light-grey: #edf0f4;
+}

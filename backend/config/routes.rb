@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+
  
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -15,6 +16,7 @@ Rails.application.routes.draw do
       resources :catalogs, only: [:index]
       resources :nutritionists, only: [:index]
       resources :appointments, only: [:create, :update, :index, :show]
+      resources :districts, only: [:index]
     end
   end
 
