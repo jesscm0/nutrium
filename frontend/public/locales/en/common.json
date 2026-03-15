@@ -1,0 +1,27 @@
+{
+  "header": "Are you a nutrition professional? Get to know our software",
+  "scheduleAppointment" : "Schedule Appointment",
+  "firstname": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "date": "Date",
+    "time": "Time",
+    "cancel": "Cancel",
+    "saveAppointment": "Save Appointment",
+    "pendingAppointment": "Pending appointment",
+    "pendingAppointmentMessage": "Do you want to accept or reject this appointment request?",
+    "reject": "Reject",
+    "accept": "Accept",
+    "onlineAppointment": "Online Appointment",
+    "answerRequest": "Answer request",
+    "pendingRequests": "Pending Requests",
+    "pendingRequestsMessage": "Accept or reject new pending requests",
+    "website": "Website",
+    "onlineFollowUp": "Online Follow-up",
+    "firstAppointment": "First Appointment",
+    "search": "Search",
+    "placeholderNameService": "Name, Service...",
+    "placeholderLocation": "Location..."
+
+
+}
