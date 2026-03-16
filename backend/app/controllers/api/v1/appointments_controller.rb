@@ -3,16 +3,18 @@ class Api::V1::AppointmentsController < ApplicationController
     #@appointments = Appointment.all
     #render json: @appointments
 
-    @appointments = Appointment.includes(:guest, :nutritionist, catalog: :service).all
+    @appointments = Appointment.includes(:guest, :nutritionist, catalog: :service)
+                           .where(status: 0)
+                           .order(scheduled_at: :asc)
 
     render json: @appointments.as_json(
       include: {
         guest: { only: [:first_name, :last_name, :email] },
-        nutritionist: { only: [:first_name, :last_name, :professional_id] },
         catalog: { 
           include: { 
             service: { only: [:description] },
-            district: { only: [:name] }
+            district: { only: [:name] },
+            nutritionist: { only: [:first_name, :last_name, :professional_id] },
           },
           only: [:price, :duration, :address]
         }
@@ -74,13 +76,23 @@ class Api::V1::AppointmentsController < ApplicationController
 
   def update
     @appointment = Appointment.find(params[:id])
+    Rails.logger.info "Status recebido: #{params[:status]}"
 
     if @appointment.update(status: params[:status])
+      
+      email = @appointment.guest&.email
+      name = @appointment.guest&.first_name
+      status = @appointment.status
+      nutritionist = @appointment.catalog&.nutritionist&.first_name
+      date = @appointment.scheduled_at.strftime("%d/%m/%Y %H:%M")
+
+      ApplicationMailer.notify_email(email, name, nutritionist, date, status).deliver_later 
+      
       render json: @appointment, status: :ok
     else
       render json: { errors: @appointment.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
-  
+
 end

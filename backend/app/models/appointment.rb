@@ -2,8 +2,9 @@ class Appointment < ApplicationRecord
 
   belongs_to :guest
   belongs_to :catalog
-  #belongs_to :nutritionist
-  #belongs_to :service
+
+  has_one :nutritionist, through: :catalog
+  has_one :service, through: :catalog
 
 
   enum status: {

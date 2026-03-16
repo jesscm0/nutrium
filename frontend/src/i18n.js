@@ -3,7 +3,6 @@ import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import HttpBackend from "i18next-http-backend";
 
-/* test with http://localhost:5173/?lng=pt or http://localhost:5173/?lng=en */
 void i18n
   .use(HttpBackend)
   .use(LanguageDetector)

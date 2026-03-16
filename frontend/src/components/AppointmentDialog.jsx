@@ -1,9 +1,31 @@
 import { Dialog, DialogPanel, DialogTitle, DialogBackdrop } from '@headlessui/react';
 import { useTranslation } from "react-i18next";
 
-export default function AppointmentDialog({ open, setOpen }) {
-  const { t } = useTranslation();
 
+export default function AppointmentDialog({ open, setOpen, appointment, onSuccess }) {
+    const { t } = useTranslation();
+
+
+    const appointmentResponse = (appointmentId, status) => {
+
+        fetch(`http://localhost:3000/api/v1/appointments/${appointmentId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                status: status
+            }),
+        })
+            .then(res => {
+                res.json();
+                console.log("on sucess:");
+                onSuccess()
+            })
+            .catch(err => console.error("Error:", err))
+
+        setOpen(false);
+    };
 
     return (
         <Dialog open={open} onClose={setOpen} className="relative z-10">
@@ -22,11 +44,11 @@ export default function AppointmentDialog({ open, setOpen }) {
 
                                 <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                                     <DialogTitle as="h3" className="text-base font-semibold text-white">
-                                       {t("pendingAppointment")} 
+                                        {t("pendingAppointment")}
                                     </DialogTitle>
                                     <div className="mt-2">
                                         <p className="text-sm text-gray-400">
-                                             {t("pendingAppointmentMessage")} 
+                                            {t("pendingAppointmentMessage")}
                                         </p>
                                     </div>
                                 </div>
@@ -35,14 +57,14 @@ export default function AppointmentDialog({ open, setOpen }) {
                         <div className="bg-gray-700/25 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                             <button
                                 type="button"
-                                onClick={() => setOpen(false)}
+                                onClick={() => { appointmentResponse(appointment.id, 2) }}
                                 className="inline-flex w-full justify-center rounded-md bg-red-500 px-3 py-2 text-sm font-semibold text-white hover:bg-red-400 sm:ml-3 sm:w-auto"
                             >
-                                {t("reject")} 
+                                {t("reject")}
                             </button>
                             <button
                                 type="button"
-                                onClick={() => setOpen(false)}
+                                onClick={() => { appointmentResponse(appointment.id, 1) }}
                                 className="inline-flex w-full justify-center rounded-md bg-green-500 px-3 py-2 text-sm font-semibold text-white hover:bg-green-400 sm:ml-3 sm:w-auto"
                             >
                                 {t("accept")}
