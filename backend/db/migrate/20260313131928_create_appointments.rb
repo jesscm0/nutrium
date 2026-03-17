@@ -9,7 +9,6 @@ class CreateAppointments < ActiveRecord::Migration[7.2]
       t.string :updated_by
       t.timestamps
     end
-    add_index :appointments, [:guest_id, :catalog_id], unique: true
     add_index :appointments, :status
     add_index :appointments, :scheduled_at
   end

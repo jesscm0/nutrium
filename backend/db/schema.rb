@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_03_13_131928) do
+ActiveRecord::Schema[7.2].define(version: 2026_03_17_132251) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "unaccent"
 
   create_table "appointments", force: :cascade do |t|
     t.bigint "guest_id", null: false
@@ -24,7 +25,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_13_131928) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["catalog_id"], name: "index_appointments_on_catalog_id"
-    t.index ["guest_id", "catalog_id"], name: "index_appointments_on_guest_id_and_catalog_id", unique: true
     t.index ["guest_id"], name: "index_appointments_on_guest_id"
     t.index ["scheduled_at"], name: "index_appointments_on_scheduled_at"
     t.index ["status"], name: "index_appointments_on_status"
@@ -86,12 +86,13 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_13_131928) do
 
   create_table "services", force: :cascade do |t|
     t.string "code", limit: 30, null: false
+    t.string "service_type", limit: 30, null: false
     t.string "description", limit: 100, null: false
     t.string "created_by", default: "SYSTEM", null: false
     t.string "updated_by"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["code"], name: "index_services_on_code", unique: true
+    t.index ["code", "service_type"], name: "index_services_on_code_and_service_type", unique: true
   end
 
   add_foreign_key "appointments", "catalogs"

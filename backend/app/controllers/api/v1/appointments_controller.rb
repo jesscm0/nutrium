@@ -22,51 +22,28 @@ class Api::V1::AppointmentsController < ApplicationController
     )
   end
 
-  def show
-    
-    @appointment = Appointment.includes(:guest, :nutritionist, catalog: :service).find(params[:id])
-    render json: @appointment.as_json(
-      include: {
-        guest: { only: [:first_name, :last_name, :email] },
-        nutritionist: { only: [:first_name, :last_name, :professional_id] },
-        catalog: { 
-          include: { 
-            service: { only: [:description] },
-            district: { only: [:name] }
-          },
-          only: [:price, :duration, :address]
-        }
-      }
-    )
-  end
-
   def create
+
     ActiveRecord::Base.transaction do
-      # 1. Encontrar ou criar o Guest pelo email
+
+      #1. Find or create the guest based on the provided email
       guest = Guest.find_or_create_by!(email: params[:guest_email]) do |g|
         g.first_name = params[:guest_first_name]
         g.last_name  = params[:guest_last_name]
       end
 
-      puts " Nutricionista id: (#{params[:nutritionist_id]})"
-
-
-      # 2. Encontrar o Nutricionista (pelo professional_id ou ID)
       nutritionist = Nutritionist.find(params[:nutritionist_id])
 
       catalog = Catalog.find_by(nutritionist_id: nutritionist.id, service_id: params[:service_id], district_id: params[:district_id])
-      
-      puts "catalog id: (#{catalog.id})"
 
-      puts "Encontrado Nutricionista: #{nutritionist.first_name} #{nutritionist.last_name}"
+      #A guest can only have one pending appointment request (i.e., submitting a new pendingrequest must invalidate the existing ones from the same guest)
+      @pending_appointments = Appointment.find_by(guest: guest, status: :pending)
+      @pending_appointments&.update_all(status: :cancelled)
 
-      scheduled_datetime = params[:date]
-
-      # 4. Criar o Appointment
       @appointment = Appointment.create!(
         guest: guest,
         catalog: catalog,
-        scheduled_at: scheduled_datetime,
+        scheduled_at: params[:date],
         status: Appointment.statuses[:pending]
       )
 
@@ -92,6 +69,30 @@ class Api::V1::AppointmentsController < ApplicationController
     else
       render json: { errors: @appointment.errors.full_messages }, status: :unprocessable_entity
     end
+
+    #If a request is accepted, all other overlapping pending requests for the professional, must be automatically rejected
+    if @appointment.accepted?
+      overlapping_appointments = Appointment.joins(:catalog)
+                                            .where(catalogs: { nutritionist_id: @appointment.catalog.nutritionist_id })
+                                            .where(status: :pending)
+                                            .where.not(id: @appointment.id)
+                                            .where("scheduled_at < ? AND scheduled_at > ?", @appointment.scheduled_at + @appointment.catalog.duration, @appointment.scheduled_at)
+
+      overlapping_appointments.update_all(status: :rejected)
+
+      overlapping_appointments.each do |appt|
+        email = appt.guest&.email
+        name = appt.guest&.first_name
+        status = appt.status
+        nutritionist = appt.catalog&.nutritionist&.first_name
+        date = appt.scheduled_at.strftime("%d/%m/%Y %H:%M")
+
+        ApplicationMailer.notify_email(email, name, nutritionist, date, status).deliver_later 
+      end
+        
+    end
+    
+
   end
 
 

@@ -9,8 +9,7 @@
 #   end
 
 
-
-puts "A inserir distritos..."
+puts "Inserting distritos..."
 
 distritos = [
   { name: 'Aveiro', code: 'aveiro', language: 'pt' },
@@ -39,7 +38,7 @@ distritos = [
 District.upsert_all(distritos, unique_by: :code)
 
 
-puts "A inserir guests..."
+puts "Inserting guests..."
 guests_data = [
   { first_name: 'Ana', last_name: 'Silva', email: 'ana.silva@gmail.com' },
   { first_name: 'João', last_name: 'Pereira', email: 'joao.pereira@gmail.com' },
@@ -49,81 +48,97 @@ guests_data = [
 Guest.upsert_all(guests_data, unique_by: :email)
 
 
-puts "A inserir services..."
+puts "Inserting services..."
 services_data = [
-  { code: 'general', description: 'Consulta de Nutrição Clínica (Geral)' },
-  { code: 'sports', description: 'Nutrição Desportiva' },
-  { code: 'pediatrics', description: 'Nutrição Pediátrica' },
-  { code: 'maternity', description: 'Nutrição na Gravidez e Pós-parto' }
+  { code: 'general', service_type: 'initial', description: '1ª Consulta de Nutrição Clínica (Geral)' },
+  { code: 'general', service_type: 'sequence', description: 'Consulta de seguimento de Nutrição Clínica (Geral)' },
+  { code: 'sports', service_type: 'initial', description: '1ª Consulta de Nutrição Desportiva' },
+  { code: 'sports', service_type: 'sequence', description: 'Consulta de seguimento de Nutrição Desportiva' },
+  { code: 'pediatrics', service_type: 'initial', description: '1ª Consulta de Nutrição Pediátrica' },
+  { code: 'pediatrics', service_type: 'sequence', description: 'Consulta de seguimento de Nutrição Pediátrica' },
+  { code: 'maternity', service_type: 'initial', description: '1ª Consulta de Nutrição na Gravidez e Pós-parto' }, # <--- Vírgula corrigida
+  { code: 'maternity', service_type: 'sequence', description: 'Consulta de seguimento de Nutrição na Gravidez e Pós-parto' }
 ]
-Service.upsert_all(services_data, unique_by: :code)
+Service.upsert_all(services_data, unique_by: [:code, :service_type])
 
-
-puts "A inserir nutritionists..."
+puts "Inserting nutritionists..."
 
 nutritionists_data = [
   { first_name: 'Sílvia', last_name: 'Mendes', email: 'silvia.mendes@nutrium.com', professional_id: '4521N' },
   { first_name: 'Nuno', last_name: 'Oliveira', email: 'nuno.oliveira@nutrium.com', professional_id: '3188N' },
-  { first_name: 'Catarina', last_name: 'Teixeira', email: 'catarina.teixeira@nutrium.com', professional_id: '5022N' },
+  { first_name: 'Catarina', last_name: 'Marçal', email: 'catarina.marcal@nutrium.com', professional_id: '5022N' },
   { first_name: 'Gonçalo', last_name: 'Pereira', email: 'gpereira.nutri@nutrium.com', professional_id: '1944N' },
-  { first_name: 'Sofia', last_name: 'Ribeiro', email: 'sofia.ribeiro.nutri@nutrium.com', professional_id: '6110N' },
+  { first_name: 'José', last_name: 'Ribeiro', email: 'jose.ribeiro.nutri@nutrium.com', professional_id: '6110N' },
   { first_name: 'Joana', last_name: 'Campos', email: 'joana.campos@nutrium.com', professional_id: '9901N' },
-  { first_name: 'Ricardo', last_name: 'Lopes', email: 'ricardo.lopes@nutrium.com', professional_id: '9902N' }
+  { first_name: 'João', last_name: 'Lopes', email: 'joao.lopes@nutrium.com', professional_id: '9902N' }
 ]
 
 Nutritionist.upsert_all(nutritionists_data, unique_by: :professional_id)
 
 
-puts "A inserir o catálogo..."
+puts "Inserting catalogs..."
 
 catalog_entries = [
-  { p_id: '4521N', s_code: 'sports',    d_code: 'Aveiro',  price: 65.0, dur: 45, addr: 'Rua do Comércio' },
-  { p_id: '3188N', s_code: 'general',   d_code: 'Beja',    price: 50.0, dur: 60, addr: 'Rua da Liberdade' },
-  { p_id: '5022N', s_code: 'pediatrics', d_code: 'Braga',   price: 55.0, dur: 50, addr: 'Av. da República' },
-  { p_id: '9901N', s_code: 'general',   d_code: 'Lisboa',  price: 80.0, dur: 60, addr: 'Rua de São Bento' },
-  { p_id: '9901N', s_code: 'general',   d_code: 'Setúbal', price: 60.0, dur: 45, addr: 'Rua Principal' },
-  { p_id: '9902N', s_code: 'sports',    d_code: 'Porto',   price: 75.0, dur: 50, addr: 'Av. dos Aliados' }
+  { p_id: '4521N', s_code: 'sports', s_type: 'initial',   d_code: 'aveiro',  price: 65, dur: 45, addr: 'Rua do Comércio' },
+  { p_id: '3188N', s_code: 'general', s_type: 'sequence',  d_code: 'beja',    price: 50, dur: 60, addr: 'Rua da Liberdade' },
+  { p_id: '5022N', s_code: 'pediatrics', s_type: 'initial', d_code: 'braga',   price: 55, dur: 50, addr: 'Av. da República' },
+  { p_id: '9901N', s_code: 'general', s_type: 'sequence',  d_code: 'lisboa',  price: 80, dur: 60, addr: 'Rua de São Bento' },
+  { p_id: '9901N', s_code: 'general', s_type: 'initial',  d_code: 'setúbal', price: 60, dur: 45, addr: 'Rua Principal' },
+  { p_id: '9902N', s_code: 'sports',  s_type: 'sequence',  d_code: 'porto',   price: 75, dur: 50, addr: 'Av. dos Aliados' },
+  { p_id: '4521N', s_code: 'sports',    s_type: 'sequence', d_code: 'aveiro',   price: 55, dur: 30, addr: 'Rua do Comércio' },
+  { p_id: '3188N', s_code: 'general',   s_type: 'initial',  d_code: 'beja',     price: 65, dur: 60, addr: 'Rua da Liberdade' },
+  { p_id: '5022N', s_code: 'pediatrics', s_type: 'sequence', d_code: 'braga',    price: 45, dur: 40, addr: 'Av. da República' },
+  { p_id: '1944N', s_code: 'maternity', s_type: 'initial',  d_code: 'faro',     price: 70, dur: 60, addr: 'Rua de Santo António' },
+  { p_id: '1944N', s_code: 'maternity', s_type: 'sequence', d_code: 'faro',     price: 55, dur: 45, addr: 'Rua de Santo António' },
+  { p_id: '6110N', s_code: 'general',   s_type: 'initial',  d_code: 'coimbra',  price: 60, dur: 50, addr: 'Largo da Portagem' },
+  { p_id: '9901N', s_code: 'sports',    s_type: 'initial',  d_code: 'lisboa',   price: 90, dur: 60, addr: 'Avenida da Liberdade' },
+  { p_id: '9902N', s_code: 'sports',    s_type: 'initial',  d_code: 'porto',    price: 85, dur: 60, addr: 'Rua de Santa Catarina' },
+  { p_id: '3188N', s_code: 'maternity', s_type: 'initial',  d_code: 'braga',    price: 65, dur: 60, addr: 'Praça do Giraldo' },
+  { p_id: '5022N', s_code: 'general',   s_type: 'initial',  d_code: 'viana-do-castelo', price: 50, dur: 45, addr: 'Rua da Bandeira' }
 ]
 
 catalog_entries.each do |item|
-  # 1. Procuramos os registos nas tabelas pai
   nutri    = Nutritionist.find_by(professional_id: item[:p_id])
-  service  = Service.find_by(code: item[:s_code])
-  district = District.find_by(name: item[:d_code])
+  service  = Service.find_by(code: item[:s_code], service_type: item[:s_type])
+  district = District.find_by(code: item[:d_code].downcase)
 
   if nutri && service && district
-    # 2. Usamos as chaves estrangeiras explicitamente (_id)
-    # Passamos o ID do objeto que encontrámos acima
-    Catalog.find_or_create_by!(
-      nutritionist_id: nutri.id,
-      service_id:      service.id,
-      district_id:     district.id
+    catalog = Catalog.find_or_create_by!(
+      nutritionist: nutri,
+      service:      service,
+      district:     district
     ) do |c|
       c.price    = item[:price]
       c.duration = item[:dur]
       c.address  = item[:addr]
     end
-    print "."
-  else
-    puts "\n[Erro] Dados em falta para: Nutri #{item[:p_id]} ou Serv #{item[:s_code]}"
   end
 end
 
 
-puts "A gerar 5 agendamentos aleatórios..."
+puts "Inserting appointments"
 
 appointment_statuses = Appointment.statuses.keys 
+appointment_statuses = Appointment.statuses.keys 
 
-5.times do |i|
-  random_guest = Guest.all.sample
-  random_catalog = Catalog.all.sample
+guests = Guest.all
+catalogs = Catalog.all
 
-  Appointment.create!(
-    guest: random_guest,
-    catalog: random_catalog,
-    status: appointment_statuses.sample,
-    scheduled_at: DateTime.now + rand(1..30).days + rand(8..18).hours, 
-  )
+if guests.any? && catalogs.any?
+  50.times do |i|
+    random_guest = guests.sample
+    random_catalog = catalogs.sample
+
+    Appointment.create!(
+      guest: random_guest,
+      catalog: random_catalog,
+      status: appointment_statuses.sample,
+      scheduled_at: Time.current + rand(1..30).days + rand(8..18).hours,
+    )
+  end
+ 
+else
+
 end
 
-puts "Seed concluído com sucesso!"
+puts "Seeds inserted!"
