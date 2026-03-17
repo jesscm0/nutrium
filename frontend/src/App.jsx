@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Nutritionists from './pages/Nutritionists';
+import Catalogs from './pages/Catalogs';
 import Appointments from './pages/Appointments';
 
 function App() {
@@ -7,7 +7,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Nutritionists />} />
+        <Route path="/" element={<Catalogs />} />
         <Route path="/appointments" element={<Appointments />} />
       </Routes>
     </BrowserRouter>
