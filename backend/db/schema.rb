@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_03_17_132252) do
+ActiveRecord::Schema[7.2].define(version: 2026_03_18_130948) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "plpgsql"
@@ -43,7 +43,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_17_132252) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["district_id"], name: "index_catalogs_on_district_id"
-    t.index ["nutritionist_id", "service_id", "district_id"], name: "idx_on_nutritionist_id_service_id_district_id_599c105fab", unique: true
+    t.index ["nutritionist_id", "service_id", "district_id", "address"], name: "index_unique_service_location_address", unique: true
     t.index ["nutritionist_id"], name: "index_catalogs_on_nutritionist_id"
     t.index ["service_id"], name: "index_catalogs_on_service_id"
   end

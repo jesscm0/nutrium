@@ -13,13 +13,13 @@ class Api::V1::CatalogsController < ApplicationController
 
     # 3. if/else to serach by params
     if name_param && location_param
-      @catalogs = @catalogs.search_by_text(combined_query)
+      @catalogs = @catalogs.search_by_profile(name_param).search_by_location(location_param)
 
     elsif name_param
-      @catalogs = @catalogs.search_by_text(name_param)
+      @catalogs = @catalogs.search_by_profile(name_param)
 
     elsif location_param
-      @catalogs = @catalogs.search_by_text(location_param)
+      @catalogs = @catalogs.search_by_location(location_param)
 
     else
       # Caso padrão: Se nada for enviado, mostramos Braga por defeito

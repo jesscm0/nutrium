@@ -22,5 +22,6 @@
   "followUpAppointment": "Consulta de seguimento",
   "search": "Procurar",
   "placeholderNameService": "Nome, Serviço...",
-  "placeholderLocation": "Localização..."
+  "placeholderLocation": "Localização...",
+  "appointmentScheduled": "Consulta agendada!"
 }

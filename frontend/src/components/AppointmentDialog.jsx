@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 export default function AppointmentDialog({ open, setOpen, appointment, onSuccess }) {
     const { t } = useTranslation();
 
-
     const appointmentResponse = (appointmentId, status) => {
 
         fetch(`http://localhost:3000/api/v1/appointments/${appointmentId}`, {

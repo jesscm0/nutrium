@@ -22,7 +22,8 @@
     "followUpAppointment": "Follow-up Appointment",
     "search": "Search",
     "placeholderNameService": "Name, Service...",
-    "placeholderLocation": "Location..."
+    "placeholderLocation": "Location...",
+    "appointmentScheduled": "Appointment scheduled!"
 
 
 }

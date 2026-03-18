@@ -1,9 +1,12 @@
 import { Dialog, DialogPanel, DialogTitle, DialogBackdrop } from '@headlessui/react';
 import { useTranslation } from "react-i18next";
 import { useState } from 'react'
+import Alert from '@mui/material/Alert';
 
 export default function AppointmentModal({ open, setOpen, catalog }) {
     const { t } = useTranslation();
+    const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(null);
     const [formData, setFormData] = useState({
         first_name: '',
         last_name: '',
@@ -11,16 +14,17 @@ export default function AppointmentModal({ open, setOpen, catalog }) {
         date: '',
         time: ''
     });
-    console.log(catalog)
 
     const clearForm = (e) => {
         setFormData({
-        first_name: '',
-        last_name: '',
-        email: '',
-        date: '',
-        time: ''
-    })
+            first_name: '',
+            last_name: '',
+            email: '',
+            date: '',
+            time: ''
+        });
+        setError(null);
+        setSuccess(null);
     }
 
     const handleSubmit = (e) => {
@@ -36,9 +40,6 @@ export default function AppointmentModal({ open, setOpen, catalog }) {
             district_id: catalog?.district?.id
         }
 
-        console.log(body);
-
-
         fetch('http://localhost:3000/api/v1/appointments', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -48,25 +49,28 @@ export default function AppointmentModal({ open, setOpen, catalog }) {
                 const data = await res.json();
 
                 if (res.ok) {
-                    alert(t("appointmentScheduled"));
-                    setOpen(false);
+                    const mensagem = t("appointmentScheduled");
+                    setSuccess(mensagem);
+                    setTimeout(() => {
+                        setOpen(false);
+                         clearForm(); 
+                    }, 2000);
                 } else {
                     const errorMessage = data.errors ? data.errors.join(", ") : "Generic Error";
-                    alert(errorMessage);
+                    setError(errorMessage);
                 }
             })
             .catch(err => {
                 console.error(" Error:", err);
-                alert(t("errorScheduling"));
+                setError(t("errorScheduling"));
             });
-
-
 
     }
 
     return (
-        <Dialog open={open} onClose={() => { setOpen(false); setFormData({}) }} className="relative z-50">
+        <Dialog open={open} onClose={() => { clearForm(); setOpen(false); setFormData({}) }} className="relative z-50">
             <DialogBackdrop className="fixed inset-0 bg-black/50 transition-opacity" />
+
 
             <div className="fixed inset-0 z-10 w-screen overflow-y-auto flex items-center justify-center p-4">
                 <DialogPanel className="w-full max-w-lg transform overflow-hidden rounded-lg bg-white p-8 shadow-xl transition-all">
@@ -76,25 +80,34 @@ export default function AppointmentModal({ open, setOpen, catalog }) {
                     </DialogTitle>
 
                     <form onSubmit={handleSubmit} className="mt-6 space-y-5">
+                        {error && (
+                            <Alert severity="error" onClose={() => setError(null)} className="mb-4">
+                                {error}
+                            </Alert>
+                        )}
 
+                        {success && (
+                            <Alert severity="success" onClose={() => setSuccess(null)} className="mb-4">
+                               {success}
+                            </Alert>
+                        )}
                         {/* Nome e Apelido */}
                         <div className="grid grid-cols-2 gap-4">
                             <div className="flex flex-col gap-1">
                                 <span className="text-sm font-semibold text-slate-700">{t("firstname")}</span>
                                 <input type="text"
                                     required
-                                    value={formData.first_name}
+                                    value={formData.first_name || ""}
                                     onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
-                                    placeholder="John"
                                     className="px-3 py-2 border border-slate-300 rounded-md text-sm focus:ring-2 focus:ring-nutrium-green outline-none" />
                             </div>
                             <div className="flex flex-col gap-1">
                                 <span className="text-sm font-semibold text-slate-700">{t("lastName")}</span>
                                 <input type="text"
                                     required
-                                    value={formData.last_name}
+                                    value={formData.last_name || ""}
                                     onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
-                                    placeholder="Doe" className="px-3 py-2 border border-slate-300 rounded-md text-sm focus:ring-2 focus:ring-nutrium-green outline-none" />
+                                    className="px-3 py-2 border border-slate-300 rounded-md text-sm focus:ring-2 focus:ring-nutrium-green outline-none" />
                             </div>
                         </div>
 
@@ -103,11 +116,8 @@ export default function AppointmentModal({ open, setOpen, catalog }) {
                             <span className="text-sm font-semibold text-slate-700">{t("email")}</span>
                             <input type="email"
                                 required
-                                value={formData.email}
+                                value={formData.email || ""}
                                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-
-
-                                placeholder="john@example.com"
                                 className="px-3 py-2 border border-slate-300 rounded-md text-sm focus:ring-2 focus:ring-nutrium-green outline-none" />
                         </div>
 
@@ -117,7 +127,7 @@ export default function AppointmentModal({ open, setOpen, catalog }) {
                                 <span className="text-sm font-semibold text-slate-700">{t("date")}</span>
                                 <input type="date"
                                     required
-                                    value={formData.date}
+                                    value={formData.date || ""}
                                     onChange={(e) => setFormData({ ...formData, date: e.target.value })}
 
                                     className="px-3 py-2 border border-slate-300 rounded-md text-sm focus:ring-2 focus:ring-nutrium-green outline-none" />
@@ -126,7 +136,7 @@ export default function AppointmentModal({ open, setOpen, catalog }) {
                                 <span className="text-sm font-semibold text-slate-700">{t("time")}</span>
                                 <input type="time"
                                     required
-                                    value={formData.time}
+                                    value={formData.time || ""}
                                     onChange={(e) => setFormData({ ...formData, time: e.target.value })}
                                     className="px-3 py-2 border border-slate-300 rounded-md text-sm focus:ring-2 focus:ring-nutrium-green outline-none" />
                             </div>

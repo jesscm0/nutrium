@@ -1,7 +1,7 @@
 require "test_helper"
 
 class CatalogTest < ActiveSupport::TestCase
-  test "search_by_text should ignore accents" do
+  test "pg search should ignore accents" do
 
     
     catalog = Catalog.create!(
@@ -15,22 +15,22 @@ class CatalogTest < ActiveSupport::TestCase
     )
 
     # pg search without í 
-    results = Catalog.search_by_text("silvia")
-    assert_includes results, catalog, "Deveria encontrar 'Sílvia' pesquisando por 'silvia'"
+    results = Catalog.search_by_profile("silvia")
+    assert_includes results, catalog, "Should find 'Sílvia' searching for 'silvia'"
     #assert_includes - Ensures the catalog is included on results
 
     # pg search without ~ or ç 
-    results = Catalog.search_by_text("nutricao")
-    assert_includes results, catalog, "Deveria encontrar 'Nutrição' pesquisando por 'nutricao'"
+    results = Catalog.search_by_profile("nutricao")
+    assert_includes results, catalog, "Should find 'Nutrição' searching for 'nutricao'"
  
 
     #pg search with half word 
-    results = Catalog.search_by_text("nutri")
-    assert_includes results, catalog, "Deveria encontrar 'Nutrição' pesquisando por 'nutri'"
+    results = Catalog.search_by_profile("nutri")
+    assert_includes results, catalog, "Should find 'Nutrição' searching for 'nutri'"
 
     # pg search by similarity
-    results = Catalog.search_by_text("barga")
-    assert_includes results, catalog, "Deveria encontrar 'Braga' pesquisando por 'barga'"
+    results = Catalog.search_by_location("barga")
+    assert_includes results, catalog, "Should find 'Braga' searching for 'barga'"
  
   end
 end

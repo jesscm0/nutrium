@@ -13,7 +13,7 @@ function Catalogs() {
   const [dados, setDados] = useState([])
   const [openModal, setOpenModal] = useState(false)
   const [paginaAtual, setPaginaAtual] = useState(1);
-  const cardsPorPagina = 2;
+  const cardsPorPagina = 1;
 
   const indiceUltimoCard = paginaAtual * cardsPorPagina;
   const indicePrimeiroCard = indiceUltimoCard - cardsPorPagina;
@@ -21,7 +21,7 @@ function Catalogs() {
   const totalPaginas = Math.ceil(dados.length / cardsPorPagina);
 
 
-  
+
   const fetchCatalog = useCallback((loc = location, nm = name) => {
     const params = new URLSearchParams({
       location: loc || "",
@@ -32,7 +32,7 @@ function Catalogs() {
       .then(res => res.json())
       .then(data => setDados(data))
       .catch(err => console.error("Error:", err));
-  }, []); 
+  }, []);
 
 
 
@@ -149,7 +149,7 @@ function Catalogs() {
                 <div className="flex flex-col my-5 ml-5 gap-4">
                   <div className="flex flex-row ml-30 items-center gap-4">
                     <i className="fa-solid fa-suitcase text-nutrium-green-darker text-xl"></i>
-                    <p className=" text-s text-slate-600">{(item?.service?.service_type == 'initial') ? t("firstAppointment") : t("followUpAppointment") }</p>
+                    <p className=" text-s text-slate-600">{(item?.service?.service_type == 'initial') ? t("firstAppointment") : t("followUpAppointment")}</p>
                   </div>
                   <div className="flex flex-row  ml-30 items-center gap-4">
                     <i className=" fa-regular fa-money-bill-1 text-nutrium-green-darker text-xl"></i>

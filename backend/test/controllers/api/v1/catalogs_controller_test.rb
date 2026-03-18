@@ -6,7 +6,7 @@ class Api::V1::CatalogsControllerTest < ActionDispatch::IntegrationTest
 
         get api_v1_catalogs_url(format: :json), params: { 
             location: "braga", 
-            name: "nutricao silvia" 
+            name: "nutricao clinica" 
         }
 
         assert_response :success
