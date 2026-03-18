@@ -13,8 +13,8 @@ class AppointmentTest < ActiveSupport::TestCase
       scheduled_at: 2.day.ago,
       status: :pending
     )
-    assert_not appointment.valid?
-    assert_includes appointment.errors[:scheduled_at], "cannot be in the past"
+    assert_not appointment.valid?  #Ensures that appointment valid is false.
+    assert_includes appointment.errors[:scheduled_at], "cannot be in the past" #Ensures that this error is included because date was 2 days ago
   end
 
   

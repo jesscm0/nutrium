@@ -1,41 +1,33 @@
 class Api::V1::CatalogsController < ApplicationController
   def index
-    
-    Rails.logger.info "Name: #{params[:name]}, Location: #{params[:location]}"
+    # 1. get the catalog and the join tables
+    @catalogs = Catalog.includes(:nutritionist, :service, :district)
+                       .references(:nutritionist, :service, :district)
 
-    if params[:location].present?
-      location_code = District.find_by(code: params[:location])&.code || "braga" #se não encontrar nenhum distrito ou enviar algum nome inválido o default é Braga
-    end  
+    # 2. check the existance of the params
+    name_param = params[:name].presence
+    location_param = params[:location].presence
+
+    combined_query = "#{name_param} #{location_param}"
   
-    if params[:name].present? && params[:location].present?
-       #search_term = "%#{params[:name].downcase.squish}%"
-     
-     
-      Rails.logger.info "search_term recebido: #{@search_term}"
-        @catalogs = Catalog.includes(:nutritionist, :service, :district)
-                      .where(districts: { code: location_code })
-                      #.where("services.description ILIKE ? OR nutritionists.first_name ILIKE ? OR nutritionists.last_name ILIKE ?", "%#{search_term}%", "%#{search_term}%", "%#{search_term}%")
-                      .references(:district)
-        @catalogs = @catalogs.search_by_text(params[:name])
 
+    # 3. if/else to serach by params
+    if name_param && location_param
+      @catalogs = @catalogs.search_by_text(combined_query)
 
-    elsif params[:name].present? && params[:location].blank?
-      #search_term = "%#{params[:name].downcase.squish}%"
+    elsif name_param
+      @catalogs = @catalogs.search_by_text(name_param)
 
-      @catalogs = Catalog.includes(:nutritionist, :service)
-      #                 .where("services.description ILIKE ? OR nutritionists.first_name ILIKE ? OR nutritionists.last_name ILIKE ?", "%#{search_term}%", "%#{search_term}%", "%#{search_term}%")
-                        .references(:nutritionist)
-      @catalogs = @catalogs.search_by_text(params[:name])
+    elsif location_param
+      @catalogs = @catalogs.search_by_text(location_param)
 
-    elsif params[:name].blank? && params[:location].present?
-      @catalogs = Catalog.includes(:nutritionist, :service, :district)
-                       .where(districts: { code: location_code })
-                       .references(:district)
     else
-      @catalogs = Catalog.includes(:nutritionist, :service, :district).all
+      # Caso padrão: Se nada for enviado, mostramos Braga por defeito
+      # Aqui usamos o where direto porque é um valor fixo de sistema
+      @catalogs = @catalogs.where(districts: { code: 'braga' })
     end
-      
 
+    # 4. Renderização
     render json: @catalogs.as_json(
       include: { 
         service: { only: [:description, :id, :service_type] },

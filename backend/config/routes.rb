@@ -9,14 +9,12 @@ Rails.application.routes.draw do
   # POST /api/v1/appointments
   # PATCH /api/v1/appointments/:id
   # GET /api/v1/appointments
-  # GET /api/v1/appointments/:id
 
   namespace :api, defaults: { format: :json } do
     namespace :v1 do
       resources :catalogs, only: [:index]
       resources :nutritionists, only: [:index]
-      resources :appointments, only: [:create, :update, :index, :show]
-      resources :districts, only: [:index]
+      resources :appointments, only: [:create, :update, :index]
     end
   end
 

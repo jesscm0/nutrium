@@ -11,14 +11,14 @@ class Api::V1::AppointmentsControllerTest < ActionDispatch::IntegrationTest
 
         first_appointment = json_response.first
         
-        assert_includes first_appointment, "scheduled_at"
+        assert_includes first_appointment, "scheduled_at" #Ensure the field is included on object 
         assert_includes first_appointment, "status"
         assert_includes first_appointment, "guest_id"
     end
 
     test "should create appointment" do
         catalog = catalogs(:silvia_general_initial)
-        post api_v1_appointments_url, 
+        post api_v1_appointments_url, #call the api key from rails routes
         params: { 
             guest_email: "jessica@email.com",
             guest_first_name: "Jessica ",
@@ -30,7 +30,7 @@ class Api::V1::AppointmentsControllerTest < ActionDispatch::IntegrationTest
         }, 
         as: :json
       
-        assert_response :created 
+        assert_response :created  #Ensure the response is 201 created
 
     end
 
@@ -39,6 +39,7 @@ class Api::V1::AppointmentsControllerTest < ActionDispatch::IntegrationTest
         guest = guests(:tiago) 
         catalog = catalogs(:silvia_general_initial)
 
+        #create the old appointment for test
         old_appointment = Appointment.create!(
             guest: guest,
             catalog: catalog,
@@ -64,9 +65,9 @@ class Api::V1::AppointmentsControllerTest < ActionDispatch::IntegrationTest
         assert_response :created
 
         old_appointment.reload
-        assert_equal "rejected", old_appointment.status, "O agendamento anterior deveria ter sido rejeitado"
+        assert_equal "rejected", old_appointment.status, "The old appointment should be rejected" #ensures the status is equal "rejected"
         
-        # 5. Verificar se o novo está 'pending'
+        # check if the new appointment status is pending
         new_appointment = Appointment.last
         assert_equal "pending", new_appointment.status
         assert_equal guest.id, new_appointment.guest_id
@@ -91,22 +92,19 @@ class Api::V1::AppointmentsControllerTest < ActionDispatch::IntegrationTest
             status: :pending
         )
 
-        # Ação: Aceitar o primeiro
+        # accept first appointment
         patch api_v1_appointment_url(appt_to_accept), 
                 params: { status: :accepted } , 
                 as: :json
 
-        #puts "DEBUG BODY: #{response.body}"
-
         assert_response :success
 
-        # Verificação
+        #get last version on db
         appt_to_accept.reload
         appt_to_be_automatic_rejected.reload
 
-        # puts "DEBUG appt_to_be_automatic_rejected: #{appt_to_be_automatic_rejected.status}"
         assert_equal "accepted", appt_to_accept.status
-        assert_equal "rejected", appt_to_be_automatic_rejected.status, "O agendamento concorrente deveria ter sido rejeitado"
+        assert_equal "rejected", appt_to_be_automatic_rejected.status, "The appointment should have been rejected"
         end
 
 end

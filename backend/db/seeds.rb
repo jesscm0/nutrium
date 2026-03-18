@@ -9,7 +9,7 @@
 #   end
 
 
-puts "Inserting distritos..."
+puts "Inserting districts..."
 
 distritos = [
   { name: 'Aveiro', code: 'aveiro', language: 'pt' },
@@ -34,7 +34,6 @@ distritos = [
   { name: 'Região Autónoma dos Açores', code: 'acores', language: 'pt' }
 ]
 
-# Usando o name como critério de unicidade para o upsert
 District.upsert_all(distritos, unique_by: :code)
 
 
