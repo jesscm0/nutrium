@@ -42,7 +42,8 @@ class Api::V1::CatalogsController < ApplicationController
         district: { only: [:name, :id] },
         nutritionist: { only: [:first_name, :last_name, :professional_id, :id] },
       },
-      only: [:price, :duration, :address]
+      only: [:price, :duration, :address],
+      methods: [:location, :name]
     )
   end
 end

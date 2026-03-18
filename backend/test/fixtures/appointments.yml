@@ -4,8 +4,8 @@
 # model remove the "{}" from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-one: {}
-# column: value
-#
-two: {}
-# column: value
+one:
+  guest: tiago    
+  catalog: silvia_general_initial 
+  scheduled_at: <%= 2.days.from_now %>
+  status: 0

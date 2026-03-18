@@ -4,8 +4,13 @@
 # model remove the "{}" from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-one: {}
-# column: value
-#
-two: {}
-# column: value
+general_initial: 
+  code: 'general'
+  service_type: 'initial'
+  description: '1ª Consulta de Nutrição Clínica (Geral)'
+ 
+general_sequence: 
+  code: 'general'
+  service_type: 'sequence'
+  description: 'Consulta de seguimento de Nutrição Clínica (Geral)'
+ 

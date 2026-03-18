@@ -8,10 +8,14 @@ class Appointment < ApplicationRecord
 
   validates :scheduled_at, presence: true
 
-  enum status: {
-    pending: 0,
-    accepted: 1,
-    rejected: 2,
-    cancelled: 3
-  }
+  enum :status, { pending: 0, accepted: 1, rejected: 2, cancelled: 3 }
+
+  validate :scheduled_at_cannot_be_in_the_past
+  def scheduled_at_cannot_be_in_the_past
+    # 2. Verifica se a data existe e se é anterior a "agora"
+    if scheduled_at.present? && scheduled_at < Time.current
+      errors.add(:scheduled_at, "cannot be in the past")
+    end
+  end
+
 end

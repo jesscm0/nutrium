@@ -22,4 +22,12 @@ class Catalog < ApplicationRecord
       }
     },
     ignoring: :accents # resolve o problema de "nutricao" vs "nutrição"
+
+  def location
+    district&.name
+  end
+
+  def name
+    service&.description
+  end
 end

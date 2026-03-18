@@ -23,7 +23,7 @@ default: &default
 
 development:
   <<: *default
-  database: my_database
+  database: my_database_dev
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.
@@ -57,7 +57,11 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: backend_test
+  database: my_database_test
+  username: jessicadianamacedo
+  password: jdmacedo
+  host: localhost
+  port: 5432
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
