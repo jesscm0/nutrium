@@ -42,3 +42,4 @@
 ![alt text](image.png)
 
 
+* POSTMAN collection shared at /test/nutrium.postman_collection.json if you want to test the APIs
